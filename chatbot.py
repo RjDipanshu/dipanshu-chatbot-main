@@ -35,7 +35,7 @@ if "history" not in st.session_state:
 # --------------------------------------------------
 try:
     llm = ChatGoogleGenerativeAI(
-        model="gemini-2.0-flash",
+        model="gemini-1.5-flash",
         temperature=0.7
     )
 except Exception as e:
@@ -264,7 +264,10 @@ if send and user_input.strip():
         
     except Exception as e:
         st.error(f"❌ API Error: {str(e)}")
-        st.error("Tip: If you see a 404/503 error, try 'gemini-1.5-flash' or check Google AI Studio for status.")
+        if "429" in str(e):
+            st.error("⏳ Quota Exceeded (429): You are sending messages too fast. Please wait 15-30 seconds and try again.")
+        else:
+            st.error("Tip: If you see a 404/503 error, try 'gemini-pro' or check Google AI Studio for status.")
 
 # --------------------------------------------------
 # CHAT DISPLAY
