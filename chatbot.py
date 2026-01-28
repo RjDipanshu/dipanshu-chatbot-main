@@ -253,15 +253,18 @@ with st.form("chat_form", clear_on_submit=True):
 if send and user_input.strip():
     st.session_state.history.add_user_message(user_input)
 
-    response = llm.invoke(
-        st.session_state.history.messages
-    )
-
-    bot_reply = response.content
-
-    st.session_state.history.add_ai_message(bot_reply)
-    st.session_state.messages.append({"role": "user", "content": user_input})
-    st.session_state.messages.append({"role": "bot", "content": bot_reply})
+    try:
+        response = llm.invoke(
+            st.session_state.history.messages
+        )
+        bot_reply = response.content
+        st.session_state.history.add_ai_message(bot_reply)
+        st.session_state.messages.append({"role": "user", "content": user_input})
+        st.session_state.messages.append({"role": "bot", "content": bot_reply})
+        
+    except Exception as e:
+        st.error(f"❌ API Error: {str(e)}")
+        st.error("Please check your GOOGLE_API_KEY in Streamlit Secrets.")
 
 # --------------------------------------------------
 # CHAT DISPLAY
