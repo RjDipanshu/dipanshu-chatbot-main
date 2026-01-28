@@ -4,10 +4,21 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from dotenv import load_dotenv
 import io
 
+import os
+
 # --------------------------------------------------
 # ENV SETUP
 # --------------------------------------------------
 load_dotenv()
+
+# Streamlit Cloud requires secrets to be accessed via st.secrets if not in os.environ
+if "GOOGLE_API_KEY" not in os.environ and "GOOGLE_API_KEY" in st.secrets:
+    os.environ["GOOGLE_API_KEY"] = st.secrets["GOOGLE_API_KEY"]
+
+if "GOOGLE_API_KEY" not in os.environ:
+    st.error("⚠️ GOOGLE_API_KEY not found! Please set it in your environment variables or Streamlit secrets.")
+    st.stop()
+
 st.set_page_config(page_title="Syntax Chatbot", page_icon="🤖", layout="centered")
 
 # --------------------------------------------------
@@ -20,12 +31,16 @@ if "history" not in st.session_state:
     st.session_state.history = ChatMessageHistory()
 
 # --------------------------------------------------
-# MODEL (NO SYSTEM MESSAGE ANYWHERE)
+# MODEL
 # --------------------------------------------------
-llm = ChatGoogleGenerativeAI(
-    model="gemini-flash-latest",
-    temperature=0.7
-)
+try:
+    llm = ChatGoogleGenerativeAI(
+        model="gemini-1.5-flash",
+        temperature=0.7
+    )
+except Exception as e:
+    st.error(f"Failed to initialize model: {e}")
+    st.stop()
 
 
 
