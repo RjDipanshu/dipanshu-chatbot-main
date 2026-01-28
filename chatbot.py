@@ -35,7 +35,7 @@ if "history" not in st.session_state:
 # --------------------------------------------------
 try:
     llm = ChatGoogleGenerativeAI(
-        model="gemini-1.5-flash",
+        model="gemini-2.0-flash",
         temperature=0.7
     )
 except Exception as e:
@@ -264,7 +264,7 @@ if send and user_input.strip():
         
     except Exception as e:
         st.error(f"❌ API Error: {str(e)}")
-        st.error("Please check your GOOGLE_API_KEY in Streamlit Secrets.")
+        st.error("Tip: If you see a 404/503 error, try 'gemini-1.5-flash' or check Google AI Studio for status.")
 
 # --------------------------------------------------
 # CHAT DISPLAY
